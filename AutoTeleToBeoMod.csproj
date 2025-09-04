@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyName>AutoTeleToBeoMod</AssemblyName>
+        <RootNamespace>AutoTeleToBeoMod</RootNamespace>
+        <TargetFramework>net452</TargetFramework>
+        <EnableHarmony>true</EnableHarmony>
+        <Platforms>x86</Platforms>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="3.0.0" />
+    </ItemGroup>
+</Project>
