@@ -1,0 +1,57 @@
+name: .NET Desktop Build and Package
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+
+    - name: Create release package
+      run: |
+        $modName = "AutoTeleToBeoMod"
+        $version = "1.0.0"
+        $releaseDir = "release"
+        $zipName = "$modName-$version.zip"
+        
+        # Create release directory
+        New-Item -ItemType Directory -Path $releaseDir -Force
+        
+        # Copy necessary files
+        Copy-Item "bin/Release/net452/$modName.dll" -Destination $releaseDir/
+        Copy-Item "manifest.json" -Destination $releaseDir/
+        Copy-Item "README.md" -Destination $releaseDir/ -ErrorAction SilentlyContinue
+        
+        # Create zip archive
+        Compress-Archive -Path "$releaseDir/*" -DestinationPath $zipName -Force
+        
+        # Display created files
+        Get-ChildItem -Path $releaseDir
+        Get-ChildItem -Path $zipName
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: mod-package
+        path: AutoTeleToBeoMod-1.0.0.zip
